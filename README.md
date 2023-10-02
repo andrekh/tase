@@ -1,2 +1,2 @@
-# tase
+# TASE
 C++ game server scanner

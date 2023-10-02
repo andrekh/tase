@@ -1,0 +1,57 @@
+{
+    "185.107.96.110:12203": {
+        "city": "Frankfurt am Main",
+        "continent": "Europe",
+        "country": "Germany",
+        "country_code": "DE",
+        "map": "",
+        "max players": 0,
+        "name": "",
+        "players": 0,
+        "status": false
+    },
+    "192.223.27.222:12203": {
+        "city": "New York",
+        "continent": "North America",
+        "country": "United States",
+        "country_code": "US",
+        "map": "",
+        "max players": 0,
+        "name": "",
+        "players": 0,
+        "status": false
+    },
+    "45.79.133.140:12203": {
+        "city": "Cedar Knolls",
+        "continent": "North America",
+        "country": "United States",
+        "country_code": "US",
+        "map": "",
+        "max players": 0,
+        "name": "",
+        "players": 0,
+        "status": false
+    },
+    "74.91.120.174:12203": {
+        "city": "Dallas",
+        "continent": "North America",
+        "country": "United States",
+        "country_code": "US",
+        "map": "",
+        "max players": 0,
+        "name": "",
+        "players": 0,
+        "status": false
+    },
+    "91.47.145.44:12203": {
+        "city": "Rieder",
+        "continent": "Europe",
+        "country": "Germany",
+        "country_code": "DE",
+        "map": "",
+        "max players": 0,
+        "name": "",
+        "players": 0,
+        "status": false
+    }
+}

@@ -5,9 +5,18 @@
 #include <netdb.h>
 
 //=====================================================================
-ServerHandler::ServerHandler(const std::string& ServerIP)
-: m_Host(ServerIP) {}
-
+void ServerHandler::Reset()
+    {
+    m_QuerySuccess = false;
+    freeaddrinfo(m_pResults);
+    m_pResults = nullptr;
+    m_Host.clear();
+    m_ServerName.clear();
+    m_Map.clear();
+    m_GameName.clear();
+    m_PlayersCount = 0;
+    m_MaxPlayers = 0;
+    }
 //=====================================================================
 int ServerHandler::ReadFromSocket()
     {

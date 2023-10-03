@@ -10,13 +10,15 @@
 class ValveHandler : public ServerHandler
     {
     public:
-        ValveHandler(const std::string& ServerIP);
-        virtual void AskServerForInfo() override;
+        virtual void AskServerForInfo(const std::string& IpAddressAndPort) override;
+        virtual void ToJson(json* const pJ) const override;
 
     private:
         void ParseA2SInfoResponse();
         void RespondToChallenge();
         void SendA2SInfo();
+        virtual void Reset() override;
+
 
     private:
         std::string m_Folder {};

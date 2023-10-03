@@ -4,16 +4,18 @@
 #include <string>
 #include <memory>
 #include <netdb.h>
+#include "json.hpp"
 
 #define UDP_SERVER_RESPONSE_BUF_SIZE 2000
+
+using json = nlohmann::json;
 
 class ServerHandler
     {
 
     public:
-        ServerHandler(const std::string& ServerIP);
-        void InitializeConnection();
-        virtual void AskServerForInfo() = 0;
+        virtual void AskServerForInfo(const std::string& IpAddressAndPort) = 0;
+        virtual void ToJson(json* const pJ) const = 0;
         virtual ~ServerHandler();
         std::string GetServerName() const { return m_ServerName; }
         std::string GetCurrentMap() const { return m_Map; }
@@ -24,6 +26,8 @@ class ServerHandler
 
     protected:
         int ReadFromSocket();
+        void InitializeConnection();
+        virtual void Reset();
         virtual std::string GetQueryPort(const std::string &Port);
 
     protected:

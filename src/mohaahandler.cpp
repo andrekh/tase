@@ -2,16 +2,19 @@
 #include <string>
 #include <map>
 
-//===============================================================================
-MohaaHandler::MohaaHandler(const std::string& ServerIP)
-: ServerHandler(ServerIP)
+//=====================================================================
+void MohaaHandler::Reset()
     {
+    ServerHandler::Reset();
+    m_GameType.clear();
     }
 
 //===============================================================================
-void MohaaHandler::AskServerForInfo()
+void MohaaHandler::AskServerForInfo(const std::string& IpAddressAndPort)
     {
-    m_QuerySuccess = false;
+    Reset();
+    m_Host = IpAddressAndPort;
+    InitializeConnection();
     const std::string Payload = "\\info\\";
 
     if((sendto(m_SocketFd, Payload.c_str(), Payload.length(), 0, m_pResults->ai_addr, m_pResults->ai_addrlen)) == -1)
@@ -67,4 +70,18 @@ void MohaaHandler::ParseInfoResponse()
     m_MaxPlayers = (uint8_t) std::stoi(ResponseMap.at("maxplayers"));
     m_PlayersCount =  (uint8_t) std::stoi(ResponseMap.at("numplayers"));
     m_QuerySuccess = true;
+    }
+
+//===============================================================================
+void MohaaHandler::ToJson(json* const pJ) const
+    {
+        (*pJ)[GetServerIP()] =
+            {
+                {"status", QuerySuccess()},
+                {"name", GetServerName()},
+                {"map", GetCurrentMap()},
+                {"gametype", GetGameType()},
+                {"players", GetPlayersCount()},
+                {"max players", GetMaxPlayers()},
+            };
     }

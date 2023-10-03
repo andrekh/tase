@@ -1,17 +1,21 @@
 #include "valvehandler.h"
 
-
-//===============================================================================
-ValveHandler::ValveHandler(const std::string& ServerIP)
-: ServerHandler(ServerIP)
+//=====================================================================
+void ValveHandler::Reset()
     {
+    ServerHandler::Reset();
+    m_Folder.clear();
+    m_GameID = 0;
     }
 
 //===============================================================================
-void ValveHandler::AskServerForInfo()
+void ValveHandler::AskServerForInfo(const std::string& IpAddressAndPort)
     {
-    m_QuerySuccess = false;
-    SendA2SInfo();
+    Reset();
+    m_Host = IpAddressAndPort;
+    InitializeConnection();
+    SendA2SInfo(); //senda2sinfo calls ReadFromSocket which can invalidate server response buf
+    ParseA2SInfoResponse();
     }
 
 //===============================================================================
@@ -27,12 +31,11 @@ void ValveHandler::SendA2SInfo()
     // receive response
     if(ReadFromSocket() < 0)
         {
-        //error
+        // error
         }
     else
         {
         RespondToChallenge();
-        ParseA2SInfoResponse();
         }
     }
 
@@ -78,4 +81,18 @@ void ValveHandler::ParseA2SInfoResponse()
     pChar += 1;
     m_MaxPlayers = (uint8_t) *pChar;
     m_QuerySuccess = true;
+    }
+
+
+//===============================================================================
+void ValveHandler::ToJson(json* const pJ) const
+    {
+        (*pJ)[GetServerIP()] =
+            {
+                {"status", QuerySuccess()},
+                {"name", GetServerName()},
+                {"map", GetCurrentMap()},
+                {"players", GetPlayersCount()},
+                {"max players", GetMaxPlayers()},
+            };
     }

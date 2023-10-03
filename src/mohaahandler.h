@@ -10,8 +10,8 @@ using json = nlohmann::json;
 class MohaaHandler : public ServerHandler
     {
     public:
-        MohaaHandler(const std::string& ServerIP);
-        virtual void AskServerForInfo() override;
+        virtual void AskServerForInfo(const std::string& IpAddressAndPort) override;
+        virtual void ToJson(json* const pJ) const override;
         std::string GetGameType() const { return m_GameType; }
 
     protected:
@@ -19,20 +19,10 @@ class MohaaHandler : public ServerHandler
         void ParseInfoResponse();
 
     private:
+        virtual void Reset() override;
+        
+    private:
         std::string m_GameType {};
     };
-
-void to_json(json& j, const MohaaHandler& Mh)
-    {
-        j[Mh.GetServerIP()] =
-            {
-                {"status", Mh.QuerySuccess()},
-                {"name", Mh.GetServerName()},
-                {"map", Mh.GetCurrentMap()},
-                {"gametype", Mh.GetGameType()},
-                {"players", Mh.GetPlayersCount()},
-                {"max players", Mh.GetMaxPlayers()},
-            };
-    }
 
 #endif

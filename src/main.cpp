@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 int main(int argc, char* argv[])
     {
-    char InputFilePath[] = "/home/smallguy/PORTSCAN2/src/mohaa.txt";
+    char InputFilePath[] = "/home/smallguy/PORTSCAN2/src/csgo.txt";
 
     std::vector<std::string> Servers;
     EProtocol eProtocol;
@@ -22,6 +22,8 @@ int main(int argc, char* argv[])
     GeoDatabase GeoDB;
     IpApi IPApi;
     json OutputJson;
+
+    auto Sh = ServerHandlerFac.CreateServerHandler(eProtocol);
 
     for(const auto& Server : Servers)
         {
@@ -35,24 +37,19 @@ int main(int argc, char* argv[])
                 }
             }
 
-        auto Sh = ServerHandlerFac.CreateServerHandler(Server, eProtocol);
-        Sh->InitializeConnection();
-        Sh->AskServerForInfo();
-        OutputJson[Sh->GetServerIP()] =
-            {
-                {"status", Sh->QuerySuccess()},
-                {"name", Sh->GetServerName()},
-                {"map", Sh->GetCurrentMap()},
-                {"players", Sh->GetPlayersCount()},
-                {"max players", Sh->GetMaxPlayers()},
-                {"country", GeoInfo.m_Country},
-                {"country_code", GeoInfo.m_CountryCode},
-                {"city", GeoInfo.m_City},
-                {"continent", GeoInfo.m_ContinentName}
+        Sh->AskServerForInfo(Server);
+
+        Sh->ToJson(&OutputJson);
+        json J = {
+            {"country", GeoInfo.m_Country},
+            {"country_code", GeoInfo.m_CountryCode},
+            {"city", GeoInfo.m_City},
+            {"continent", GeoInfo.m_ContinentName}
             };
+        OutputJson[Sh->GetServerIP()].update(J);
         }
 
-    std::ofstream out("../output/results.json");
+    std::ofstream out("/home/smallguy/PORTSCAN2/output/output.json");
     out << std::setw(4) << OutputJson;
     out.close();
     return 0;

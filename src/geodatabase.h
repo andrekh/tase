@@ -8,7 +8,7 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "utils.h"
 
-#define GEODB_SQL_FILENAME "geo.db"
+#define GEODB_SQL_FILENAME "/home/smallguy/PORTSCAN2/output/geo.db"
 
 typedef std::chrono::system_clock Time;
 typedef std::chrono::seconds Seconds;

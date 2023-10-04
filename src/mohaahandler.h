@@ -10,7 +10,7 @@ using json = nlohmann::json;
 class MohaaHandler : public ServerHandler
     {
     public:
-        virtual void AskServerForInfo(const std::string& IpAddressAndPort) override;
+        virtual void AskServerForInfo(const std::string& IpAddressAndPort, json* const pJ) override;
         virtual void ToJson(json* const pJ) const override;
         std::string GetGameType() const { return m_GameType; }
 

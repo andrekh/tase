@@ -1,6 +1,7 @@
 #ifndef GEOLOCATER_H_
 #define GEOLOCATER_H_
 
+#include "geoinfo.h"
 #include "utils.h"
 #include <netdb.h>
 

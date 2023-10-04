@@ -11,16 +11,6 @@ enum class EProtocol
     eValve,
     eGameSpyV1,
     };
-
-//====================================================
-struct SGeoInfo
-    {
-    std::string m_IP {};
-    std::string m_Country {};
-    std::string m_City {};
-    std::string m_ContinentName {};
-    std::string m_CountryCode {};
-    };
     
 //====================================================
 inline bool IsIPv4AddressValid(const char* IpAddress)

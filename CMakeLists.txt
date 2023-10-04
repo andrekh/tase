@@ -17,6 +17,7 @@ src/valvehandler.cpp
 src/geodatabase.cpp
 src/geolocater.cpp
 src/ipapi.cpp
+src/geoinfo.cpp
 src/mohaahandler.cpp)
 target_link_libraries(TASE PRIVATE 
                 json

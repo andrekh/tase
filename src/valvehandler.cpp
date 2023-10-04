@@ -9,13 +9,20 @@ void ValveHandler::Reset()
     }
 
 //===============================================================================
-void ValveHandler::AskServerForInfo(const std::string& IpAddressAndPort)
+void ValveHandler::AskServerForInfo(const std::string& IpAddressAndPort, json* const pJ)
     {
     Reset();
     m_Host = IpAddressAndPort;
     InitializeConnection();
-    SendA2SInfo(); //senda2sinfo calls ReadFromSocket which can invalidate server response buf
-    ParseA2SInfoResponse();
+    SendA2SInfo();
+    if(m_QuerySuccess)
+        {
+        ParseA2SInfoResponse();
+        }
+    if(pJ)
+        {
+        ToJson(pJ);
+        }
     }
 
 //===============================================================================
@@ -31,7 +38,8 @@ void ValveHandler::SendA2SInfo()
     // receive response
     if(ReadFromSocket() < 0)
         {
-        // error
+        m_QuerySuccess = false;
+        return;
         }
     else
         {
@@ -54,7 +62,7 @@ void ValveHandler::RespondToChallenge()
 
         if(ReadFromSocket() < 0)
             {
-            // error
+            m_QuerySuccess = false;
             }
         }
     }
@@ -87,12 +95,18 @@ void ValveHandler::ParseA2SInfoResponse()
 //===============================================================================
 void ValveHandler::ToJson(json* const pJ) const
     {
-        (*pJ)[GetServerIP()] =
+        if(!m_QuerySuccess)
             {
-                {"status", QuerySuccess()},
+            (*pJ)[GetServerIP()].update({{"status", "false"}});
+            return;
+            }
+
+        (*pJ)[GetServerIP()].update(
+            {
+                {"status", "true"},
                 {"name", GetServerName()},
                 {"map", GetCurrentMap()},
                 {"players", GetPlayersCount()},
                 {"max players", GetMaxPlayers()},
-            };
+            });
     }

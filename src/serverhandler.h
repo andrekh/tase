@@ -14,7 +14,7 @@ class ServerHandler
     {
 
     public:
-        virtual void AskServerForInfo(const std::string& IpAddressAndPort) = 0;
+        virtual void AskServerForInfo(const std::string& IpAddressAndPort, json* const pJ) = 0;
         virtual void ToJson(json* const pJ) const = 0;
         virtual ~ServerHandler();
         std::string GetServerName() const { return m_ServerName; }
@@ -31,7 +31,7 @@ class ServerHandler
         virtual std::string GetQueryPort(const std::string &Port);
 
     protected:
-        bool m_QuerySuccess {false};
+        bool m_QuerySuccess {true};
         char m_ServerResponse[UDP_SERVER_RESPONSE_BUF_SIZE] = {'\0'};
         int m_SocketFd {};
         addrinfo * m_pResults = nullptr;

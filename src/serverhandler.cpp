@@ -7,7 +7,7 @@
 //=====================================================================
 void ServerHandler::Reset()
     {
-    m_QuerySuccess = false;
+    m_QuerySuccess = true;
     freeaddrinfo(m_pResults);
     m_pResults = nullptr;
     m_Host.clear();
@@ -45,6 +45,10 @@ void ServerHandler::InitializeConnection()
         {
         throw ExceptionWithErrNo("serverhandler failed to create socet", errno);
         }
+
+    timeval Timeout {};
+    Timeout.tv_sec = 5;
+    setsockopt(m_SocketFd, SOL_SOCKET, SO_RCVTIMEO, &Timeout, sizeof(Timeout));
     }
 
 //=====================================================================

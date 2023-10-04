@@ -10,7 +10,7 @@
 class ValveHandler : public ServerHandler
     {
     public:
-        virtual void AskServerForInfo(const std::string& IpAddressAndPort) override;
+        virtual void AskServerForInfo(const std::string& IpAddressAndPort, json* const pJ) override;
         virtual void ToJson(json* const pJ) const override;
 
     private:

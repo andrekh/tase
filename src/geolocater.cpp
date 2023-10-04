@@ -2,6 +2,7 @@
 #include "except.h"
 #include "errno.h"
 #include "string.h"
+#include "geoinfo.h"
 
 //=====================================================================
 GeoLocater::GeoLocater()

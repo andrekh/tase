@@ -10,7 +10,7 @@ void MohaaHandler::Reset()
     }
 
 //===============================================================================
-void MohaaHandler::AskServerForInfo(const std::string& IpAddressAndPort)
+void MohaaHandler::AskServerForInfo(const std::string& IpAddressAndPort, json* const pJ)
     {
     Reset();
     m_Host = IpAddressAndPort;
@@ -24,10 +24,17 @@ void MohaaHandler::AskServerForInfo(const std::string& IpAddressAndPort)
 
     if(ReadFromSocket() < 0)
         {
-        //error
+        m_QuerySuccess = false;
+        }
+    else
+        {
+        ParseInfoResponse();
         }
 
-    ParseInfoResponse();
+    if(pJ)
+        {
+        ToJson(pJ);
+        }
     }
 
 //===============================================================================
@@ -75,13 +82,19 @@ void MohaaHandler::ParseInfoResponse()
 //===============================================================================
 void MohaaHandler::ToJson(json* const pJ) const
     {
-        (*pJ)[GetServerIP()] =
+        if(!m_QuerySuccess)
             {
-                {"status", QuerySuccess()},
+            (*pJ)[GetServerIP()].update({{"status", "false"}});
+            return;
+            }
+
+        (*pJ)[GetServerIP()].update(
+            {
+                {"status", "true"},
                 {"name", GetServerName()},
                 {"map", GetCurrentMap()},
                 {"gametype", GetGameType()},
                 {"players", GetPlayersCount()},
                 {"max players", GetMaxPlayers()},
-            };
+            });
     }

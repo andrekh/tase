@@ -18,7 +18,7 @@ class GeoDatabase
     public:
         GeoDatabase();
         bool LookupByIP(const std::string& IpAddress, SGeoInfo* const pSGeoInfo) const;
-        void UpsertEntry(const SGeoInfo& GeoInfo);
+        void UpsertEntry(const SGeoInfo& GeoInfo) const;
 
     private:
         bool LoadDatabase();

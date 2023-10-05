@@ -16,9 +16,11 @@ using json = nlohmann::json;
 
 // Function prototypes
 void Process(const std::string& IpAddressAndPort, std::unique_ptr<ServerHandler> Sh);
+void GetGeoLocation(const std::string& IpAddress, SGeoInfo* const pSGeoInfo, GeoLocater* const pGeoLocater);
 
 // Globals
-std::mutex Mtx;
+std::mutex GeoMutex;
+std::mutex JsonMutex;
 json OutputJson;
 GeoDatabase GeoDB;
 
@@ -33,7 +35,7 @@ GeoDatabase GeoDB;
 //===============================================================================
 int main(int argc, char* argv[])
     {
-    char InputFilePath[] = "/home/smallguy/PORTSCAN2/src/csgo.txt";
+    char InputFilePath[] = "/home/smallguy/PORTSCAN2/serverlists/mohaa.txt";
 
     std::vector<std::string> Servers;
     EProtocol eProtocol;
@@ -63,9 +65,16 @@ int main(int argc, char* argv[])
 //===============================================================================
 /* 
    Thread function to process server information:
+
+   @param IpAddressAndPort  IP address and port of the server to process "xxx.xxx.xxx.xxx:port"
+   @param Sh                Unique ptr to the ServerHandler responsible for handling the server.
+   
+   This function performs the following tasks:
    - IP address geolocation lookup.
-   - Server information retrieval.
-   - Output JSON data update.
+   - Retrieval of server information using the ServerHandler.
+   - Updates the global JSON data (OutputJson) with the server information.
+
+   @note Can be called concurrently by multiple threads to process different servers.
 */
 //===============================================================================
 void Process(
@@ -76,21 +85,49 @@ void Process(
     IpApi IPApi;
 
     std::string IPAddress = StripPortFromIP(IpAddressAndPort);
-    if(!GeoDB.LookupByIP(IPAddress, &GeoInfo))
-        {
-        if(IPApi.LookupIP(IPAddress, &GeoInfo))
-            {
-            std::lock_guard<std::mutex> Lock(Mtx);
-            GeoDB.UpsertEntry(GeoInfo);
-            }
-        }
+    GetGeoLocation(IPAddress, &GeoInfo, &IPApi);
     Sh->AskServerForInfo(IpAddressAndPort, nullptr);
     
-    std::lock_guard<std::mutex> Lock(Mtx);
+    std::lock_guard<std::mutex> Lock(JsonMutex);
     Sh->ToJson(&OutputJson);
     if(Sh->QuerySuccess())
         {
         GeoInfo.ToJson(Sh->GetServerIP(), &OutputJson);
         }
     return;
+    }
+
+//===============================================================================
+/* 
+   GetGeoLocation function for IP address geolocation lookup:
+   - Looks up the geolocation information for the given IP address.
+   - Updates the provided SGeoInfo structure with the geolocation data.
+   - If not found in the GeoDB, attempts a lookup using the provided GeoLocater.
+   - If successful, updates the GeoDB in a thread-safe manner.
+
+   @param IpAddress       The IP address to perform the geolocation lookup for.
+   @param pSGeoInfo       A pointer to the SGeoInfo structure to store the geolocation data.
+   @param pGeoLocater     A pointer to the GeoLocater used for geolocation lookups.
+
+   @note If pSGeoInfo or pGeoLocater is nullptr, this function will return without performing any action.
+*/
+//===============================================================================
+void GetGeoLocation(
+    const std::string& IpAddress,
+    SGeoInfo* const pSGeoInfo,
+    GeoLocater* const pGeoLocater)
+    {
+    if(!pSGeoInfo || !pGeoLocater) { return; }
+    if(!GeoDB.LookupByIP(IpAddress, pSGeoInfo))
+        {
+        if(pGeoLocater->LookupIP(IpAddress, pSGeoInfo))
+            {
+            std::lock_guard<std::mutex> Lock(GeoMutex);
+            GeoDB.UpsertEntry(*pSGeoInfo);
+            }
+        else
+            {
+            // fill with default values?
+            }
+        }
     }

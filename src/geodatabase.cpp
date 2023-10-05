@@ -28,7 +28,7 @@ bool GeoDatabase::LoadDatabase()
     }
 
 //====================================================
-void GeoDatabase::UpsertEntry(const SGeoInfo& GeoInfo)
+void GeoDatabase::UpsertEntry(const SGeoInfo& GeoInfo) const
     {
     if(!IsIPv4AddressValid(GeoInfo.m_IP.c_str()))
         {

@@ -138,4 +138,5 @@ int GeoLocater::GetContentLength(const std::string& HTTPResponse)
 GeoLocater::~GeoLocater()
     {
     freeaddrinfo(m_pResults);
+    m_pResults = nullptr;
     }

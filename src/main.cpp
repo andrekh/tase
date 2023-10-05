@@ -98,7 +98,7 @@ void Process(
     GetGeoLocation(IPAddress, pGeoDB, &IPApi, &GeoInfo);
     pSh->AskServerForInfo(IpAddressAndPort, nullptr);
     
-    std::lock_guard<std::mutex> Lock(JsonMutex);
+    std::lock_guard Lock(JsonMutex);
     pSh->ToJson(&OutputJson);
     if(pSh->QuerySuccess())
         {

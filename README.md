@@ -1,7 +1,7 @@
 
 # TASE
 
-TASE scans and retrieves information from game servers using the Valve and GamespyV1 protocols. It collects details such as map, server name, players, and more. Additionally, it provides geolocalization information for the servers it scans. The information is written into an output JSON file.
+TASE scans and retrieves information from game servers using the Valve and GamespyV1 protocols. It also provides geolocalization information for the servers it scans. The information is written into an output JSON file.
 
 ## Features
 

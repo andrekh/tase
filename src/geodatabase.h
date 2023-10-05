@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <chrono>
+#include <mutex>
 #include "geoinfo.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "utils.h"

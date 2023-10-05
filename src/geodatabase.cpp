@@ -34,7 +34,8 @@ void GeoDatabase::UpsertEntry(const SGeoInfo& GeoInfo) const
         {
         return;
         }
-
+    static std::mutex Mutex;
+    std::lock_guard lock(Mutex);
     const std::string UpsertQuery = R"(INSERT OR REPLACE INTO geolocation (ip_address, country, city, continent_name, country_code, last_updated)
                                 VALUES (:ip, :country, :city, :continent, :country_code, :last_updated))";
     

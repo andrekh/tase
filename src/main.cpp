@@ -139,7 +139,7 @@ void GetGeoLocation(
 
     if(!Found && pGeoLocater)
         {
-        Found= pGeoLocater->LookupIP(IpAddress, pSGeoInfo);
+        Found = pGeoLocater->LookupIP(IpAddress, pSGeoInfo);
         }
 
     if(Found && pGeoDB)
